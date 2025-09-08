@@ -158,8 +158,8 @@ public final class Table {
         }
 
         if (getGameBoard().currentPlayer().isInStaleMate()) {
-            String message = "Jogador " + getGameBoard().currentPlayer() + " is in stalemate!";
-            JOptionPane.showMessageDialog(getBoardPanel(), "Game Over: " + message, "Game Over",
+            String message = "Jogador " + getGameBoard().currentPlayer() + " está em impasse!";
+            JOptionPane.showMessageDialog(getBoardPanel(), "Fim de jogo: " + message, "Fim de jogo",
                     JOptionPane.INFORMATION_MESSAGE);
             this.eventManager.publishGameEvent(new GameOverEvent(message, GameOverEvent.GameResult.STALEMATE));
             return;
@@ -169,18 +169,18 @@ public final class Table {
         if (getGameSetup().isAIPlayer(getGameBoard().currentPlayer()) &&
                 !getGameBoard().currentPlayer().isInCheckMate() &&
                 !getGameBoard().currentPlayer().isInStaleMate()) {
-            System.out.println(getGameBoard().currentPlayer() + " is set to AI, thinking....");
+            System.out.println(getGameBoard().currentPlayer() + " é a vez da IA, pensando....");
             this.eventManager.publishGameEvent(new AIThinkingEvent());
         }
     }
 
     void handleGameSetupChanged(final GameSetup gameSetup) {
-        System.out.println("Game setup changed: " + gameSetup);
+        System.out.println("Configuração do jogo alterada: " + gameSetup);
         // Check if current player is now AI and should start thinking
         if (gameSetup.isAIPlayer(getGameBoard().currentPlayer()) &&
                 !getGameBoard().currentPlayer().isInCheckMate() &&
                 !getGameBoard().currentPlayer().isInStaleMate()) {
-            System.out.println(getGameBoard().currentPlayer() + " is set to AI, thinking....");
+            System.out.println(getGameBoard().currentPlayer() + " é a vez da IA, pensando....");
             this.eventManager.publishGameEvent(new AIThinkingEvent());
         }
     }
@@ -191,7 +191,7 @@ public final class Table {
     }
 
     void handleGameOver(final String message, final GameOverEvent.GameResult result) {
-        System.out.println("Game Over: " + message + " (" + result + ")");
+        System.out.println("Fim de jogo: " + message + " (" + result + ")");
         // Additional game over handling logic can be added here
         // For example: save game, reset board, show statistics, etc.
     }
@@ -201,7 +201,7 @@ public final class Table {
         this.chessBoard = Board.createStandardBoard();
         this.computerMove = null;
         this.show();
-        System.out.println("New game started");
+        System.out.println("Novo jogo iniciado");
     }
 
     private void populateMenuBar(final JMenuBar tableMenuBar) {
@@ -220,9 +220,9 @@ public final class Table {
     }
 
     private JMenu createFileMenu() {
-        final JMenu filesMenu = new JMenu("File");
+        final JMenu filesMenu = new JMenu("Arquivo");
         filesMenu.setMnemonic(KeyEvent.VK_F);
-        final JMenuItem openPGN = new JMenuItem("Load PGN File", KeyEvent.VK_O);
+        final JMenuItem openPGN = new JMenuItem("Arquivo PGN", KeyEvent.VK_O);
         openPGN.addActionListener(_ -> {
             JFileChooser chooser = new JFileChooser();
             int option = chooser.showOpenDialog(Table.get().getGameFrame());
@@ -231,10 +231,11 @@ public final class Table {
             }
         });
         filesMenu.add(openPGN);
+        // PGN arquivo de texto que armazena notações de jogos de xadrez
 
-        final JMenuItem openFEN = new JMenuItem("Load FEN File", KeyEvent.VK_F);
+        final JMenuItem openFEN = new JMenuItem("Arquivo FEN", KeyEvent.VK_F);
         openFEN.addActionListener(_ -> {
-            String fenString = JOptionPane.showInputDialog("Input FEN");
+            String fenString = JOptionPane.showInputDialog("Entrada FEN");
             if(fenString != null) {
                 undoAllMoves();
                 this.chessBoard = FenUtilities.createGameFromFEN(fenString);
@@ -242,8 +243,9 @@ public final class Table {
             }
         });
         filesMenu.add(openFEN);
+        // descreve uma posição especifica no tabuleiro de xadrez
 
-        final JMenuItem saveToPGN = new JMenuItem("Save Game", KeyEvent.VK_S);
+        final JMenuItem saveToPGN = new JMenuItem("Salvar jogo", KeyEvent.VK_S);
         saveToPGN.addActionListener(_ -> {
             final JFileChooser chooser = new JFileChooser();
             chooser.setFileFilter(new FileFilter() {
@@ -263,7 +265,7 @@ public final class Table {
         });
         filesMenu.add(saveToPGN);
 
-        final JMenuItem exitMenuItem = new JMenuItem("Exit", KeyEvent.VK_X);
+        final JMenuItem exitMenuItem = new JMenuItem("Sair", KeyEvent.VK_X);
         exitMenuItem.addActionListener(_ -> {
             Table.get().getGameFrame().dispose();
             System.exit(0);
@@ -275,16 +277,16 @@ public final class Table {
 
     private JMenu createOptionsMenu() {
 
-        final JMenu optionsMenu = new JMenu("Options");
+        final JMenu optionsMenu = new JMenu("Opções");
         optionsMenu.setMnemonic(KeyEvent.VK_O);
 
-        final JMenuItem resetMenuItem = new JMenuItem("New Game", KeyEvent.VK_P);
+        final JMenuItem resetMenuItem = new JMenuItem("Novo Jogo", KeyEvent.VK_P);
         resetMenuItem.addActionListener(_ -> {
             this.eventManager.publishGameEvent(new NewGameEvent());
         });
         optionsMenu.add(resetMenuItem);
 
-        final JMenuItem evaluateBoardMenuItem = new JMenuItem("Evaluate Board", KeyEvent.VK_E);
+        final JMenuItem evaluateBoardMenuItem = new JMenuItem("Avaliar tabuleiro", KeyEvent.VK_E);
         evaluateBoardMenuItem.addActionListener(_ -> {
             System.out.println(StandardBoardEvaluator.get().evaluationDetails(this.chessBoard, this.gameSetup.getSearchDepth()));
             System.out.println(FenUtilities.createFENFromGame(this.chessBoard));
@@ -292,7 +294,7 @@ public final class Table {
         optionsMenu.add(evaluateBoardMenuItem);
 
 
-        final JMenuItem legalMovesMenuItem = new JMenuItem("Current State", KeyEvent.VK_L);
+        final JMenuItem legalMovesMenuItem = new JMenuItem("Estado atual", KeyEvent.VK_L);
         legalMovesMenuItem.addActionListener(_ -> {
             System.out.println(FenUtilities.createFENFromGame(this.chessBoard));
             System.out.println("hash = " +this.chessBoard.hashCode());
@@ -303,14 +305,14 @@ public final class Table {
         });
         optionsMenu.add(legalMovesMenuItem);
 
-        final JMenuItem undoMoveMenuItem = new JMenuItem("Undo last move", KeyEvent.VK_M);
+        final JMenuItem undoMoveMenuItem = new JMenuItem("Desfazer último movimento", KeyEvent.VK_M);
         undoMoveMenuItem.addActionListener(_ -> {
-            System.out.println("user initiated undo!");
+            System.out.println("Desfazer iniciado pelo usuário!");
             undoLastMove();
         });
         optionsMenu.add(undoMoveMenuItem);
 
-        final JMenuItem setupGameMenuItem = new JMenuItem("Setup Game", KeyEvent.VK_S);
+        final JMenuItem setupGameMenuItem = new JMenuItem("Configuração de jogo", KeyEvent.VK_S);
         setupGameMenuItem.addActionListener(_ -> {
             Table.get().getGameSetup().promptUser();
         });
@@ -321,25 +323,25 @@ public final class Table {
 
     private JMenu createPreferencesMenu() {
 
-        final JMenu preferencesMenu = new JMenu("Preferences");
+        final JMenu preferencesMenu = new JMenu("Preferências");
 
-        final JMenu colorChooserSubMenu = new JMenu("Choose Colors");
+        final JMenu colorChooserSubMenu = new JMenu("Escolha as cores");
         colorChooserSubMenu.setMnemonic(KeyEvent.VK_S);
 
-        final JMenuItem chooseDarkMenuItem = new JMenuItem("Choose Dark Tile Color");
+        final JMenuItem chooseDarkMenuItem = new JMenuItem("Escolha o azulejo escuro");
         colorChooserSubMenu.add(chooseDarkMenuItem);
 
-        final JMenuItem chooseLightMenuItem = new JMenuItem("Choose Light Tile Color");
+        final JMenuItem chooseLightMenuItem = new JMenuItem("Escolha o azulejo claro");
         colorChooserSubMenu.add(chooseLightMenuItem);
 
         final JMenuItem chooseLegalHighlightMenuItem = new JMenuItem(
-                "Choose Legal Move Highlight Color");
+                "Escolha a cor para os movimentos legais");
         colorChooserSubMenu.add(chooseLegalHighlightMenuItem);
 
         preferencesMenu.add(colorChooserSubMenu);
 
         chooseDarkMenuItem.addActionListener(_ -> {
-            final Color colorChoice = JColorChooser.showDialog(Table.get().getGameFrame(), "Choose Dark Tile Color",
+            final Color colorChoice = JColorChooser.showDialog(Table.get().getGameFrame(), "Escolha o azulejo escuro",
                     Table.get().getGameFrame().getBackground());
             if (colorChoice != null) {
                 Table.get().getBoardPanel().setTileDarkColor(this.chessBoard, colorChoice);
@@ -347,14 +349,14 @@ public final class Table {
         });
 
         chooseLightMenuItem.addActionListener(_ -> {
-            final Color colorChoice = JColorChooser.showDialog(Table.get().getGameFrame(), "Choose Light Tile Color",
+            final Color colorChoice = JColorChooser.showDialog(Table.get().getGameFrame(), "Escolha o azulejo claro",
                     Table.get().getGameFrame().getBackground());
             if (colorChoice != null) {
                 Table.get().getBoardPanel().setTileLightColor(this.chessBoard, colorChoice);
             }
         });
 
-        final JMenu chessMenChoiceSubMenu = new JMenu("Choose Chess Men Image Set");
+        final JMenu chessMenChoiceSubMenu = new JMenu("Escolha as imagens das peças dentro do conjunto");
 
         final JMenuItem holyWarriorsMenuItem = new JMenuItem("Holy Warriors");
         chessMenChoiceSubMenu.add(holyWarriorsMenuItem);
@@ -375,7 +377,7 @@ public final class Table {
         chessMenChoiceSubMenu.add(fancyMenMenuItem2);
 
         woodMenMenuItem.addActionListener(_ -> {
-            System.out.println("implement me");
+            System.out.println("Implemente");
             Table.get().getGameFrame().repaint();
         });
 
@@ -405,11 +407,11 @@ public final class Table {
         preferencesMenu.add(chessMenChoiceSubMenu);
 
         chooseLegalHighlightMenuItem.addActionListener(_ -> {
-            System.out.println("implement me");
+            System.out.println("Implemente");
             Table.get().getGameFrame().repaint();
         });
 
-        final JMenuItem flipBoardMenuItem = new JMenuItem("Flip board");
+        final JMenuItem flipBoardMenuItem = new JMenuItem("Virar tabuleiro");
 
         flipBoardMenuItem.addActionListener(_ -> {
             this.boardDirection = this.boardDirection.opposite();
@@ -421,14 +423,14 @@ public final class Table {
 
 
         final JCheckBoxMenuItem cbLegalMoveHighlighter = new JCheckBoxMenuItem(
-                "Highlight Legal Moves", false);
+                "Destaca movimentos legais", false);
 
         cbLegalMoveHighlighter.addActionListener(_ -> highlightLegalMoves = cbLegalMoveHighlighter.isSelected());
 
         preferencesMenu.add(cbLegalMoveHighlighter);
 
         final JCheckBoxMenuItem cbUseBookMoves = new JCheckBoxMenuItem(
-                "Use Book Moves", false);
+                "Usar movimentos do livro", false);
 
         cbUseBookMoves.addActionListener(_ -> useBook = cbUseBookMoves.isSelected());
 
@@ -472,8 +474,8 @@ public final class Table {
         } catch (final Exception e) {
             JOptionPane.showMessageDialog(
                     Table.get().getGameFrame(),
-                    "Error importing PGN file: " + e.getMessage(),
-                    "Import Error",
+                    "Erro ao importar arquivo PGN: " + e.getMessage(),
+                    "Erro",
                     JOptionPane.ERROR_MESSAGE
             );
             throw new RuntimeException(e);
